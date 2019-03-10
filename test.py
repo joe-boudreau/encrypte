@@ -6,8 +6,9 @@ password2 = Password("pword2", "Gmail", "2019-22-01", "2020-12-31")
 
 test_up = UserPasswords("Test User", "password hash abc123", [password1, password2])
 
+
 save_password_file(test_up, "test_file.encrypted")
 
 saved_up = read_password_file("test_file.encrypted")
 
-print(saved_up)
+print(saved_up.passwords[1].password)

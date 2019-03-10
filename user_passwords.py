@@ -3,6 +3,7 @@ class UserPasswords:
     def __init__(self, username, password_hash, passwords):
         self._username = username
         self._password_hash = password_hash
+        self._shared_secret = shared_secret
         self._passwords = passwords
 
     @property
