@@ -4,20 +4,23 @@ import urllib.parse
 import pyqrcode
 
 
-#b = bytes('data encoded', 'utf-8')
-#encoded = base64.b32encode(b)
-#hotp = pyotp.HOTP(encoded) # secret key must be 32 based
-#print(hotp.at(0))
+def generate_QR_code(accountName, issuer, password):
+    b = bytes(password, 'utf-8')
+    encoded = base64.b32encode(b)
+    val = encoded.decode("utf-8")
+    URL = pyotp.totp.TOTP(val[:16]).provisioning_uri(accountName, issuer_name=issuer)
+    qrcode = pyqrcode.create(URL)
+    qrcode.svg('uca-url.svg', scale=1)
+    qrcode.eps('uca-url.eps', scale=2)
+    print(qrcode.terminal(quiet_zone=1))
 
-#qrcode = "otpauth://totp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App"
-accountNameEncoded ="alice@google.com"
-issuerEncoded ="encrypte"
-ekey = "JBSWY3DPEHPK3PXP"
-hotp = "otpauth://hotp/%s?issuer=%s&secret=%s&counter=1" % (accountNameEncoded, issuerEncoded, ekey)
-#query = urllib.parse.quote('otpauth://totp/Secure%20App:alice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Secure%20App')
-print(hotp)
-URL = pyotp.totp.TOTP(ekey).provisioning_uri(accountNameEncoded, issuer_name=issuerEncoded)
-qrcode = pyqrcode.create(URL, error='L', version=5, mode='binary')
-qrcode.svg('uca-url.svg', scale=1)
-qrcode.eps('uca-url.eps', scale=2)
-print(qrcode.terminal(quiet_zone=1))
+def verify_otp_password(password, otp):
+    b = bytes(password, 'utf-8')
+    encoded = base64.b32encode(b)
+    val = encoded.decode("utf-8")
+    totp = pyotp.TOTP(val[:16])
+    print("Current OTP:", totp.now())
+    if otp == totp.now():
+        print('Password valid')
+    else:
+        print('Password invalid')
