@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QMainWindow
+from gui import images_rc
 
 
 class Register(QObject):

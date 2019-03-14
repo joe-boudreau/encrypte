@@ -1,8 +1,9 @@
-class UserPasswords:
+class UserData:
 
-    def __init__(self, username, password_hash, passwords):
+    def __init__(self, username, password_hash, salt, shared_secret, passwords=[]):
         self._username = username
         self._password_hash = password_hash
+        self._salt = salt
         self._shared_secret = shared_secret
         self._passwords = passwords
 
@@ -15,8 +16,16 @@ class UserPasswords:
         return self._password_hash
 
     @property
+    def salt(self):
+        return self._salt
+
+    @property
     def passwords(self):
         return self._passwords
+
+    @property
+    def shared_secret(self):
+        return self._shared_secret
 
     @username.setter
     def username(self, val):
@@ -30,9 +39,17 @@ class UserPasswords:
             raise ValueError("Cannot set a blank password")
         self._password_hash = val
 
+    @salt.setter
+    def salt(self, val):
+        self._salt = val
+
     @passwords.setter
     def passwords(self, val):
         self._passwords = val
+
+    @shared_secret.setter
+    def shared_secret(self, val):
+        self._shared_secret = val
 
 
 class Password:

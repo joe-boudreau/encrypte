@@ -3,6 +3,7 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QPushButton, QMainWindow
 
 from gui.register import Register
+from gui import images_rc
 
 
 class Login(QObject):
