@@ -1,6 +1,5 @@
 from PyQt5 import uic
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QMainWindow
 
 
 class Register(QObject):
