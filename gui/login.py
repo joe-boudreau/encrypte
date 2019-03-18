@@ -1,9 +1,11 @@
+import sys
+
 from PyQt5 import uic
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QPushButton, QMainWindow
+from PyQt5.QtWidgets import QPushButton, QApplication
 
 from gui.register import Register
-from gui import images_rc
+from gui import images_rc #this is needed for image rendering
 
 
 class Login(QObject):
@@ -19,7 +21,7 @@ class Login(QObject):
         register_button = self.window.findChild(QPushButton, 'login_button')
         register_button.clicked.connect(self.attempt_login)
 
-        self.register = Register()
+        self.register = Register(parent=self)
 
     def open_register(self):
         self.register.show()

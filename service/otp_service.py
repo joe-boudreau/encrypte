@@ -1,22 +1,29 @@
 import pyotp
-import base64
-import urllib.parse
 import pyqrcode
-import png
+
 
 def generate_QR_code(accountName, issuer):
+    """
+    Generates a QR code for the given account name and issuer. Returns the password and the QR code object as a tuple
+
+    :param accountName: the account name (string)
+    :param issuer: the issuer name (string)
+    :returns: the generated password, a QR code object
+    :rtype: tuple [String, QRCode]
+    """
     password = pyotp.random_base32()
     URL = pyotp.totp.TOTP(password).provisioning_uri(accountName, issuer_name=issuer)
     qrcode = pyqrcode.create(URL)
-    qrcode.png('Generated_QR_code.png', scale= 6) #Generate a png image of the qrcode
-    qrcode.svg('uca-url.svg', scale=8) #generate html file containing the QRcode
-    qrcode.eps('uca-url.eps', scale=4) #generate eps file
     print(qrcode.terminal(quiet_zone=1))
-    return password
+    return password, qrcode
+
+
 def verify_otp_password(password, otp):
     totp = pyotp.TOTP(password)
     print("Current OTP:", totp.now())
     if otp == totp.now():
         print('Password valid')
+        return True
     else:
         print('Password invalid')
+        return False
