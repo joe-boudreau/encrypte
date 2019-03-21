@@ -91,6 +91,11 @@
       <string>Unlock</string>
      </property>
     </widget>
+    <widget class="QLabel" name="result_msg">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
