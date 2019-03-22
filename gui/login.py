@@ -1,12 +1,12 @@
-import sys
+from gui import images_rc #don't remove - this is needed for image rendering
 
 from PyQt5 import uic
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QLineEdit
+from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit
 
+from gui.common import Common
 from gui.register import Register
-from gui import images_rc #this is needed for image rendering
-from service.database_service import get_user
+from service.database_service import authenticate
 from service.utils import get_formatted_msg
 
 
@@ -34,15 +34,19 @@ class Login(QObject):
         self.window.destroy()
 
     def attempt_login(self):
-        username, password, otp_value = self.get_credentials()
-        user = get_user(username, password)
+        username, password, otp_value = self.get_entered_credentials()
 
-        print("TODO")
+        if authenticate(username, password, otp_value):
+            Common(parent=self).show()
+            self.window.destroy()
 
-    def show(self, msg=None):
+        else:
+            self.show("Authentication Unsuccessful", "red")
+
+    def show(self, msg=None, color="green"):
         if msg is not None:
-            self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg("green", msg))
+            self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg(msg, color))
         self.window.show()
 
-    def get_credentials(self):
-        return self.username_input.text(), self.password_input.text(), self.otp_shared_secret
+    def get_entered_credentials(self):
+        return self.username_input.text(), self.password_input.text(), self.otp_input.text()

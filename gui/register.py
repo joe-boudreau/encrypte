@@ -1,11 +1,13 @@
+from gui import images_rc  # this is needed for image rendering
+
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QByteArray
 from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtWidgets import QPushButton, QLineEdit, QLabel, QDialog, QDialogButtonBox, QCommandLinkButton
+from PyQt5.QtWidgets import QPushButton, QLineEdit, QLabel, QCommandLinkButton
 
-from gui import images_rc  # this is needed for image rendering
 from service import otp_service
 from service.database_service import register_new_user
+from service.otp_service import verify_otp_password
 from service.utils import get_formatted_msg
 
 
@@ -70,15 +72,15 @@ class RegisterConfirm(QObject):
         self.cancel_button.clicked.connect(self.cancel_action)
 
     def register_action(self):
-        username, password, otp_shared_secret = self.parent().get_credentials()
+        username, password, otp_shared_secret = self.parent().get_entered_credentials()
 
         username_confirm = self.username_input.text()
         password_confirm = self.password_input.text()
         otp_value = self.otp_input.text()
 
-        registration_successful = username == username_confirm & \
-                                  password == password_confirm & \
-                                  otp_service.verify_otp_password(otp_shared_secret, otp_value)
+        registration_successful = (username == username_confirm) & \
+                                  (password == password_confirm) & \
+                                  verify_otp_password(otp_shared_secret, otp_value)
 
         if registration_successful:
             register_new_user(username, password, otp_shared_secret)

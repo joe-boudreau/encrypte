@@ -57,9 +57,9 @@
     <property name="orientation">
      <enum>Qt::Vertical</enum>
     </property>
-    <widget class="QLineEdit" name="lineEdit_2"/>
-    <widget class="QLineEdit" name="lineEdit"/>
-    <widget class="QLineEdit" name="lineEdit_3"/>
+    <widget class="QLineEdit" name="username_input"/>
+    <widget class="QLineEdit" name="password_input"/>
+    <widget class="QLineEdit" name="otp_input"/>
    </widget>
    <widget class="QSplitter" name="splitter_3">
     <property name="geometry">
