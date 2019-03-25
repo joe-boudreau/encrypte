@@ -57,9 +57,9 @@
     <property name="orientation">
      <enum>Qt::Vertical</enum>
     </property>
-    <widget class="QLineEdit" name="lineEdit_2"/>
-    <widget class="QLineEdit" name="lineEdit"/>
-    <widget class="QLineEdit" name="lineEdit_3"/>
+    <widget class="QLineEdit" name="username_input"/>
+    <widget class="QLineEdit" name="password_input"/>
+    <widget class="QLineEdit" name="otp_input"/>
    </widget>
    <widget class="QSplitter" name="splitter_3">
     <property name="geometry">
@@ -89,6 +89,11 @@
     <widget class="QPushButton" name="login_button">
      <property name="text">
       <string>Unlock</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="result_msg">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </widget>

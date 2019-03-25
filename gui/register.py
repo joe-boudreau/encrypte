@@ -1,10 +1,14 @@
+from gui import images_rc  # this is needed for image rendering
+
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QByteArray
 from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtWidgets import QPushButton, QLineEdit, QLabel, QDialog, QDialogButtonBox, QCommandLinkButton
+from PyQt5.QtWidgets import QPushButton, QLineEdit, QLabel, QCommandLinkButton
 
-from gui import images_rc  # this is needed for image rendering
 from service import otp_service
+from service.database_service import register_new_user
+from service.otp_service import verify_otp_password
+from service.utils import get_formatted_msg
 
 
 class Register(QObject):
@@ -22,8 +26,8 @@ class Register(QObject):
         self.username_input = self.window.findChild(QLineEdit, 'username_input')
         self.password_input = self.window.findChild(QLineEdit, 'password_input')
 
-        self.otp_shared_secret, qr_code = otp_service.generate_QR_code("encrypte user",
-                                                                       "encrypte")  # TODO: Use username entered instead of hardcoded
+        # TODO: Use username entered instead of hardcoded
+        self.otp_shared_secret, qr_code = otp_service.generate_QR_code("encrypte user", "encrypte")
 
         b64array = QByteArray.fromBase64(qr_code.png_as_base64_str(scale=6).encode('ascii'))
         qr_code_image = QImage()
@@ -33,7 +37,6 @@ class Register(QObject):
         self.qr_code_label.setPixmap(QPixmap.fromImage(qr_code_image))
 
         self.confirm_dialog = RegisterConfirm(self)
-        self.registration_successful = False
 
     def continue_action(self):
         self.confirm_dialog.show()
@@ -69,21 +72,23 @@ class RegisterConfirm(QObject):
         self.cancel_button.clicked.connect(self.cancel_action)
 
     def register_action(self):
-        username, password, otp_shared_secret = self.parent().get_credentials()
+        username, password, otp_shared_secret = self.parent().get_entered_credentials()
 
         username_confirm = self.username_input.text()
         password_confirm = self.password_input.text()
         otp_value = self.otp_input.text()
 
-        registration_successful = (username == username_confirm) & (password == password_confirm) & otp_service.verify_otp_password(otp_shared_secret, otp_value)
-
-        self.parent().registration_successful = registration_successful
+        registration_successful = (username == username_confirm) & \
+                                  (password == password_confirm) & \
+                                  verify_otp_password(otp_shared_secret, otp_value)
 
         if registration_successful:
-            self.parent().show()
-            self.window.destroy()
+            register_new_user(username, password, otp_shared_secret)
+            self.parent().parent().show("Registration Successful!") #open login window
+            self.parent().window.destroy() #close register window
+            self.window.destroy() #close dialog
         else:
-            self.result_message.setText("Incorrect Credentials! Try again")
+            self.result_message.setText(get_formatted_msg("red", "Incorrect Credentials! Try again"))
 
     def cancel_action(self):
         self.parent().show()
@@ -91,3 +96,4 @@ class RegisterConfirm(QObject):
 
     def show(self):
         self.window.show()
+

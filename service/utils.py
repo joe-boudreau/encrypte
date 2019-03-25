@@ -21,3 +21,6 @@ def sha256_hash_bytes(data, salt=""):
 def salt_generator():
     chars = string.ascii_uppercase + string.digits
     return ''.join(random.choice(chars) for _ in range(10))
+
+def get_formatted_msg(msg, color="black"):
+    return "<html><head/><body><p align='center' style='color:{}'><b>{}</b><br/></p></body></html>".format(color, msg)
