@@ -20,6 +20,7 @@ class Register(QObject):
         self.continue_button = self.window.findChild(QPushButton, 'continue_button')
         self.continue_button.clicked.connect(self.continue_action)
 
+
         self.cancel_button = self.window.findChild(QPushButton, 'cancel_button')
         self.cancel_button.clicked.connect(self.cancel_action)
 
