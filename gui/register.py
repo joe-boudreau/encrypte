@@ -72,7 +72,7 @@ class RegisterConfirm(QObject):
         self.cancel_button.clicked.connect(self.cancel_action)
 
     def register_action(self):
-        username, password, otp_shared_secret = self.parent().get_entered_credentials()
+        username, password, otp_shared_secret = self.parent().get_credentials()
 
         username_confirm = self.username_input.text()
         password_confirm = self.password_input.text()
