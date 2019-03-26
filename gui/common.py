@@ -1,19 +1,25 @@
+import datetime
 import sys
 
 from PyQt5 import uic
-from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QLineEdit, QTableView
+from PyQt5.QtCore import QObject, QAbstractTableModel, QVariant, Qt
+from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView
 
-from gui.register import Register
 from gui import images_rc #this is needed for image rendering
-from service.database_service import get_user, authenticate
 from service.utils import get_formatted_msg
+from user_passwords import Password, UserData
 
+def get_user(username, password):
+    return UserData(username, password, "salt", "shared_secret", passwords)
 
 class Common(QObject):
 
     def __init__(self,  username, password, parent=None):
+
         super(Common, self).__init__(parent)
+
+        self.user = get_user(username, password)
+        self.user_password = password
 
         self.window = uic.loadUi("gui/ui_files/common.ui")
 
@@ -26,7 +32,8 @@ class Common(QObject):
         self.common_button = self.window.findChild(QPushButton, 'Quit_button')
         self.common_button.clicked.connect(self.quit_action)
 
-        self.load_function(username, password)
+        self.password_table = self.window.findChild(QTableView, 'Password_table')
+        self.load_password_model()
 
         self.common_button = self.window.findChild(QTableView, 'Password_button')
 
@@ -34,6 +41,10 @@ class Common(QObject):
         if msg is not None:
             self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg(color, msg))
         self.window.show()
+
+    def load_password_model(self):
+        model = PasswordsModel(self.user.passwords)
+        self.password_table.setModel(model)
 
     def open_add_dialog(self):
         return
@@ -44,7 +55,51 @@ class Common(QObject):
     def quit_action(self):
         return
 
-    def load_function(self, username, password):
-        decode = get_user(username, password)
-        info = decode.passwords
+class PasswordsModel(QAbstractTableModel):
+    def __init__(self, passwords, parent=None):
+        """
+        Args:
+            passwords: a list of Password objects
+            headerdata: a list of strings
+        """
+        QAbstractTableModel.__init__(self, parent)
+        self.passwords = passwords
+        if len(passwords) > 0:
+            self.headerdata = list(vars(passwords[0]))
+        else:
+            self.headerdata = []
 
+    def rowCount(self, parent):
+        return len(self.passwords)
+
+    def columnCount(self, parent):
+        return len(self.headerdata)
+
+    def get_password_attr(self, row_index, attr_index):
+        return list(vars(self.passwords[row_index]).values())[attr_index]
+
+    def data(self, index, role):
+        if not index.isValid():
+            return QVariant()
+        elif role != Qt.DisplayRole:
+            return QVariant()
+        return QVariant(self.get_password_attr(index.row(), index.column()))
+
+    def headerData(self, col, orientation, role):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            return QVariant(self.headerdata[col])
+        return QVariant()
+
+create = datetime.datetime(2019, 2, 26)
+expiry = datetime.datetime(2020, 4, 20)
+
+password1 = Password("secret1", "Facebook", create, expiry)
+password2 = Password("secret2", "Google", create, expiry)
+password3 = Password("secret1", "Pornhub", create, expiry)
+
+passwords = [password1, password2, password3]
+
+app = QApplication(sys.argv)
+common = Common("test", "password")
+common.show()
+sys.exit(app.exec_())

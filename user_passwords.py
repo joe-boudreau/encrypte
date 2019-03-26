@@ -61,12 +61,16 @@ class UserData:
 
 class Password:
 
-    def __init__(self, password, service, create_date, expiry_date):
+    def __init__(self, username, password, service, notes):
+        self._username = username
         self._password = password
         self._service = service
-        self._create_date = create_date
-        self._expiry_date = expiry_date
-        self._password_id = utils.salt_generator()
+        self._notes = notes
+        self._id = utils.salt_generator()
+
+    @property
+    def username(self):
+        return self._username
 
     @property
     def password(self):
@@ -77,12 +81,16 @@ class Password:
         return self._service
 
     @property
-    def create_date(self):
-        return self._create_date
+    def notes(self):
+        return self._notes
 
     @property
-    def expiry_date(self):
-        return self._expiry_date
+    def id(self):
+        return self._id
+
+    @username.setter
+    def username(self, val):
+        self._username = val
 
     @password.setter
     def password(self, val):
@@ -92,10 +100,6 @@ class Password:
     def service(self, val):
         self._service = val
 
-    @create_date.setter
-    def create_date(self, val):
-        self._create_date = val
-
-    @expiry_date.setter
-    def expiry_date(self, val):
-        self._expiry_date = val
+    @notes.setter
+    def notes(self, val):
+        self._notes = val
