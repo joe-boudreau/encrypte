@@ -37,9 +37,8 @@ class Login(QObject):
         username, password, otp_value = self.get_entered_credentials()
 
         if authenticate(username, password, otp_value):
-            Common(parent=self).show()
+            Common(username, password, parent=self).show()
             self.window.destroy()
-
         else:
             self.show("Authentication Unsuccessful", "red")
 
