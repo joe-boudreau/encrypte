@@ -15,7 +15,7 @@ class Common(QObject):
     def __init__(self,  username, password, parent=None):
         super(Common, self).__init__(parent)
 
-        self.window = uic.loadUi("ui_files/common.ui")
+        self.window = uic.loadUi("gui/ui_files/common.ui")
 
         self.common_button = self.window.findChild(QPushButton, 'Add_button')
         self.common_button.clicked.connect(self.Add_action)

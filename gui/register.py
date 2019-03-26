@@ -15,7 +15,7 @@ class Register(QObject):
 
     def __init__(self, parent=None):
         super(Register, self).__init__(parent)
-        self.window = uic.loadUi("ui_files/register.ui")
+        self.window = uic.loadUi("gui/ui_files/register.ui")
 
         self.continue_button = self.window.findChild(QPushButton, 'continue_button')
         self.continue_button.clicked.connect(self.continue_action)
@@ -57,7 +57,7 @@ class RegisterConfirm(QObject):
 
     def __init__(self, parent=None):
         super(RegisterConfirm, self).__init__(parent)
-        self.window = uic.loadUi("ui_files/register_confirm.ui")
+        self.window = uic.loadUi("gui/ui_files/register_confirm.ui")
 
         self.username_input = self.window.findChild(QLineEdit, 'username_input')
         self.password_input = self.window.findChild(QLineEdit, 'password_input')

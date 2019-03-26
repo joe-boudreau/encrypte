@@ -51,6 +51,10 @@ class UserData:
     def shared_secret(self, val):
         self._shared_secret = val
 
+    def add_password(self, password, service, create_date, expiry_date):
+        newpassword = Password(password, service, create_date, expiry_date)
+        self._passwords.append(newpassword)
+
 
 class Password:
 
