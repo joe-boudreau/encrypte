@@ -3,14 +3,12 @@ import sys
 
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QAbstractTableModel, QVariant, Qt
-from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView, QLineEdit, QDialog
+from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView, QLineEdit
 from service import database_service
 from gui import images_rc #this is needed for image rendering
+from service.database_service import get_user
 from service.utils import get_formatted_msg
-from user_passwords import Password, UserData
-
-def get_user(username, password):
-    return UserData(username, password, "salt", "shared_secret", passwords)
+from user_passwords import Password
 
 class Common(QObject):
 
@@ -44,7 +42,7 @@ class Common(QObject):
 
     def show(self, msg=None, color="black"):
         if msg is not None:
-            self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg(color, msg))
+            self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg(msg, color))
         self.window.show()
 
     def load_password_model(self):
@@ -56,9 +54,19 @@ class Common(QObject):
     def open_add_dialog(self):
         AddDialog(self).window.show()
 
+    def remove_action(self):
+        selected = self.password_table.selectionModel().selectedRows()
 
-    def remove_action(self, secret_id):
-        return
+        if len(selected) != 1:
+            self.show("You must select a password to remove", "red")
+        else:
+            self.delete_password(selected)
+
+    def delete_password(self, selected):
+        password_to_remove = self.user.passwords[selected[0].row()]
+        database_service.remove_password(self.user, self.user_password, password_to_remove)
+        self.load_password_model()
+        self.show("The password for service: {} has been permanently deleted".format(password_to_remove.service))
 
     def quit_action(self):
         self.window.hide()
@@ -129,7 +137,7 @@ class AddDialog(QObject):
             return
         user = self.parent().user
         login_password = self.parent().user_password
-        database_service.add_password_to_user(user,login_password, username, pwd, service, notes)
+        database_service.add_password_to_user(user, login_password, username, pwd, service, notes)
 
         self.parent().load_password_model()
         self.parent().show("The new password information has been succesfuly added to the file")
@@ -144,13 +152,13 @@ class AddDialog(QObject):
         self.window.hide()
 
 
-password1 = Password("gmail","secret1", "Facebook")
-password2 = Password("like","secret2", "Google")
-password3 = Password("brand","secret1", "Pornhub")
-
-passwords = [password1, password2, password3]
-
-app = QApplication(sys.argv)
-common = Common("test", "password")
-common.show()
-sys.exit(app.exec_())
+# password1 = Password("gmail","secret1", "Facebook")
+# password2 = Password("like","secret2", "Google")
+# password3 = Password("brand","secret1", "Pornhub")
+#
+# passwords = [password1, password2, password3]
+#
+# app = QApplication(sys.argv)
+# common = Common("test", "password")
+# common.show()
+# sys.exit(app.exec_())

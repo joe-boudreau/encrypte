@@ -228,6 +228,12 @@
     <property name="contextMenuPolicy">
      <enum>Qt::DefaultContextMenu</enum>
     </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="selectionBehavior">
+     <enum>QAbstractItemView::SelectRows</enum>
+    </property>
    </widget>
    <widget class="QPushButton" name="Quit_button">
     <property name="geometry">
@@ -365,7 +371,7 @@
      <rect>
       <x>30</x>
       <y>450</y>
-      <width>651</width>
+      <width>771</width>
       <height>141</height>
      </rect>
     </property>

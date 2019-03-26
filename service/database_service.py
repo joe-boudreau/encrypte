@@ -95,12 +95,15 @@ def get_16B_seed_val():
     seed = config_service.get_encryption_seed()
     return pad(seed)[:16]
 
+
 def add_password_to_user(user, login_password, username, password, service, notes):
    user.add_password(username, password, service, notes)
    save_user(user, login_password)
-   return user
 
-def remove_password(user, password):
-    user.passwords.remove(password)
+
+def remove_password(user, password, password_to_remove):
+    user.passwords.remove(password_to_remove)
+    save_user(user, password)
+
 
 #def edit_password(user, password):
