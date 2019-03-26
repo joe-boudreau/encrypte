@@ -23,4 +23,4 @@ def salt_generator():
     return ''.join(random.choice(chars) for _ in range(10))
 
 def get_formatted_msg(msg, color="black"):
-    return "<html><head/><body><p align='center' style='color:{}'><b>{}</b><br/></p></body></html>".format(color, msg)
+    return "<html><head/><body><p align='center' style='color:{0}'><b>{1}</b><br/></p></body></html>".format(color, msg)

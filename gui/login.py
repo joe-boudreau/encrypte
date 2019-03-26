@@ -1,5 +1,5 @@
 from gui import images_rc #don't remove - this is needed for image rendering
-import os
+
 from PyQt5 import uic
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit
@@ -13,7 +13,6 @@ from service.utils import get_formatted_msg
 class Login(QObject):
 
     def __init__(self, parent=None):
-        print(os.getcwd())
         super(Login, self).__init__(parent)
 
         self.window = uic.loadUi("gui/ui_files/login.ui")

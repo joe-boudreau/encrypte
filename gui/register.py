@@ -20,7 +20,6 @@ class Register(QObject):
         self.continue_button = self.window.findChild(QPushButton, 'continue_button')
         self.continue_button.clicked.connect(self.continue_action)
 
-
         self.cancel_button = self.window.findChild(QPushButton, 'cancel_button')
         self.cancel_button.clicked.connect(self.cancel_action)
 
@@ -88,7 +87,7 @@ class RegisterConfirm(QObject):
             self.parent().window.destroy() #close register window
             self.window.destroy() #close dialog
         else:
-            self.result_message.setText(get_formatted_msg("red", "Incorrect Credentials! Try again"))
+            self.result_message.setText(get_formatted_msg("Incorrect Credentials! Try again", "red"))
 
     def cancel_action(self):
         self.parent().show()
