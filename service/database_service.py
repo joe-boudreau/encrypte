@@ -95,8 +95,8 @@ def get_16B_seed_val():
     seed = config_service.get_encryption_seed()
     return pad(seed)[:16]
 
-def add_password_to_user(user, login_password, password, service, create_date, expiry_date):
-   user.add_password(password, service, create_date, expiry_date)
+def add_password_to_user(user, login_password, username, password, service, notes):
+   user.add_password(username, password, service, notes)
    save_user(user, login_password)
    return user
 

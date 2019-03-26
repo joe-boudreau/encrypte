@@ -3,8 +3,8 @@ import sys
 
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QAbstractTableModel, QVariant, Qt
-from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView
-
+from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView, QLineEdit, QDialog
+from service import database_service
 from gui import images_rc #this is needed for image rendering
 from service.utils import get_formatted_msg
 from user_passwords import Password, UserData
@@ -40,6 +40,8 @@ class Common(QObject):
 
         self.common_button = self.window.findChild(QTableView, 'Password_button')
 
+
+
     def show(self, msg=None, color="black"):
         if msg is not None:
             self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg(color, msg))
@@ -47,16 +49,26 @@ class Common(QObject):
 
     def load_password_model(self):
         model = PasswordsModel(self.user.passwords)
+        #get the user password and format them in an intelligible way for the tableviw
         self.password_table.setModel(model)
+        #set_model populates tableview with the user passwords
 
     def open_add_dialog(self):
-        return
+        AddDialog(self).window.show()
+
 
     def remove_action(self, secret_id):
         return
 
     def quit_action(self):
+        self.window.hide()
+        sys.exit()
         return
+
+    def show(self, msg=None, color="green"):
+        if msg is not None:
+            self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg(msg, color))
+        self.window.show()
 
 class PasswordsModel(QAbstractTableModel):
     def __init__(self, passwords, parent=None):
@@ -92,3 +104,48 @@ class PasswordsModel(QAbstractTableModel):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return QVariant(self.headerdata[col])
         return QVariant()
+
+class AddDialog(QObject):
+    def __init__(self, parent=None):
+        super(AddDialog, self).__init__(parent)
+        self.window = uic.loadUi("gui/ui_files/add_new_password.ui")
+
+        self.common_button = self.window.findChild(QPushButton, 'save_button')
+        self.common_button.clicked.connect(self.save_button)
+
+        self.common_button = self.window.findChild(QPushButton, 'cancel_button')
+        self.common_button.clicked.connect(self.cancel_action)
+
+        self.username_input = self.window.findChild(QLineEdit, 'username_input')
+        self.password_input = self.window.findChild(QLineEdit, 'password_input')
+        self.service_name_input = self.window.findChild(QLineEdit, 'service_name_input')
+        self.notes_input = self.window.findChild(QLineEdit, 'notes_input')
+
+    def save_button(self):
+        username, pwd, service, notes = self.get_password()
+        user = self.parent().user
+        login_password = self.parent().user_password
+        database_service.add_password_to_user(user,login_password, username, pwd, service, notes)
+
+        self.parent().load_password_model()
+        self.parent().show("The new password information has been succesfuly added to the file")
+        self.window.hide()
+
+    def get_password(self):
+        return self.username_input.text(), self.password_input.text(), self.service_name_input.text(), self.notes_input.text()
+
+    def cancel_action(self):
+        self.parent().show()
+        self.window.hide()
+
+
+password1 = Password("gmail","secret1", "Facebook")
+password2 = Password("like","secret2", "Google")
+password3 = Password("brand","secret1", "Pornhub")
+
+passwords = [password1, password2, password3]
+
+app = QApplication(sys.argv)
+common = Common("test", "password")
+common.show()
+sys.exit(app.exec_())

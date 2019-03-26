@@ -96,7 +96,7 @@ class RegisterConfirm(QObject):
 
     def cancel_action(self):
         self.parent().show()
-        self.window.destroy()
+        self.window.hide()
 
     def show(self):
         self.window.show()

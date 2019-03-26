@@ -54,14 +54,14 @@ class UserData:
     def shared_secret(self, val):
         self._shared_secret = val
 
-    def add_password(self, password, service, create_date, expiry_date):
-        newpassword = Password(password, service, create_date, expiry_date)
+    def add_password(self,username, password, service, notes):
+        newpassword = Password(username, password, service, notes)
         self._passwords.append(newpassword)
 
 
 class Password:
 
-    def __init__(self, username, password, service, notes):
+    def __init__(self, username, password, service, notes = "default"):
         self._username = username
         self._password = password
         self._service = service
