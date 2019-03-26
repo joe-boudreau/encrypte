@@ -63,9 +63,8 @@ class RegisterConfirm(QObject):
         self.otp_input = self.window.findChild(QLineEdit, 'otp_input')
 
         self.result_message = self.window.findChild(QLabel, 'result_message')
-        self.result_message.setText("")
 
-        self.register_button = self.window.findChild(QCommandLinkButton, 'register_button')
+        self.register_button = self.window.findChild(QPushButton, 'register_button')
         self.register_button.clicked.connect(self.register_action)
 
         self.cancel_button = self.window.findChild(QPushButton, 'cancel_button')
