@@ -15,11 +15,10 @@ class Register(QObject):
 
     def __init__(self, parent=None):
         super(Register, self).__init__(parent)
-        self.window = uic.loadUi("ui_files/register.ui")
+        self.window = uic.loadUi("gui/ui_files/register.ui")
 
         self.continue_button = self.window.findChild(QPushButton, 'continue_button')
         self.continue_button.clicked.connect(self.continue_action)
-
 
         self.cancel_button = self.window.findChild(QPushButton, 'cancel_button')
         self.cancel_button.clicked.connect(self.cancel_action)
@@ -57,7 +56,7 @@ class RegisterConfirm(QObject):
 
     def __init__(self, parent=None):
         super(RegisterConfirm, self).__init__(parent)
-        self.window = uic.loadUi("ui_files/register_confirm.ui")
+        self.window = uic.loadUi("gui/ui_files/register_confirm.ui")
 
         self.username_input = self.window.findChild(QLineEdit, 'username_input')
         self.password_input = self.window.findChild(QLineEdit, 'password_input')
@@ -88,7 +87,7 @@ class RegisterConfirm(QObject):
             self.parent().window.destroy() #close register window
             self.window.destroy() #close dialog
         else:
-            self.result_message.setText(get_formatted_msg("red", "Incorrect Credentials! Try again"))
+            self.result_message.setText(get_formatted_msg("Incorrect Credentials! Try again", "red"))
 
     def cancel_action(self):
         self.parent().show()

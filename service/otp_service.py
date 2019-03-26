@@ -14,7 +14,6 @@ def generate_QR_code(accountName, issuer):
     password = pyotp.random_base32()
     URL = pyotp.totp.TOTP(password).provisioning_uri(accountName, issuer_name=issuer)
     qrcode = pyqrcode.create(URL)
-    print(qrcode.terminal(quiet_zone=1))
     return password, qrcode
 
 

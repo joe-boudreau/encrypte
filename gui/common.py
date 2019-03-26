@@ -15,16 +15,16 @@ class Common(QObject):
     def __init__(self,  username, password, parent=None):
         super(Common, self).__init__(parent)
 
-        self.window = uic.loadUi("ui_files/common.ui")
+        self.window = uic.loadUi("gui/ui_files/common.ui")
 
         self.common_button = self.window.findChild(QPushButton, 'Add_button')
-        self.common_button.clicked.connect(self.Add_action)
+        self.common_button.clicked.connect(self.open_add_dialog)
 
         self.common_button = self.window.findChild(QPushButton, 'Remove_button')
-        self.common_button.clicked.connect(self.Remove_action)
+        self.common_button.clicked.connect(self.remove_action)
 
         self.common_button = self.window.findChild(QPushButton, 'Quit_button')
-        self.common_button.clicked.connect(self.Quit_action)
+        self.common_button.clicked.connect(self.quit_action)
 
         self.load_function(username, password)
 
@@ -35,8 +35,16 @@ class Common(QObject):
             self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg(color, msg))
         self.window.show()
 
-    def load_function(username, password):
+    def open_add_dialog(self):
+        return
 
+    def remove_action(self, secret_id):
+        return
+
+    def quit_action(self):
+        return
+
+    def load_function(self, username, password):
         decode = get_user(username, password)
         info = decode.passwords
 

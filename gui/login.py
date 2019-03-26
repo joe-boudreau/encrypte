@@ -1,3 +1,5 @@
+import os
+
 from gui import images_rc #don't remove - this is needed for image rendering
 
 from PyQt5 import uic
@@ -14,8 +16,8 @@ class Login(QObject):
 
     def __init__(self, parent=None):
         super(Login, self).__init__(parent)
-
-        self.window = uic.loadUi("ui_files/login.ui")
+        print(os.getcwd())
+        self.window = uic.loadUi("gui/ui_files/login.ui")
 
         register_button = self.window.findChild(QPushButton, 'register_button')
         register_button.clicked.connect(self.open_register)
