@@ -23,6 +23,9 @@ class Common(QObject):
 
         self.window = uic.loadUi("gui/ui_files/common.ui")
 
+        username_label = self.window.findChild(QLabel, 'username_label')
+        username_label.setText(username_label.text().format(username))
+
         self.common_button = self.window.findChild(QPushButton, 'Add_button')
         self.common_button.clicked.connect(self.open_add_dialog)
 
@@ -89,17 +92,3 @@ class PasswordsModel(QAbstractTableModel):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return QVariant(self.headerdata[col])
         return QVariant()
-
-create = datetime.datetime(2019, 2, 26)
-expiry = datetime.datetime(2020, 4, 20)
-
-password1 = Password("secret1", "Facebook", create, expiry)
-password2 = Password("secret2", "Google", create, expiry)
-password3 = Password("secret1", "Pornhub", create, expiry)
-
-passwords = [password1, password2, password3]
-
-app = QApplication(sys.argv)
-common = Common("test", "password")
-common.show()
-sys.exit(app.exec_())
