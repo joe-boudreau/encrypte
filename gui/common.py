@@ -122,7 +122,11 @@ class AddDialog(QObject):
         self.notes_input = self.window.findChild(QLineEdit, 'notes_input')
 
     def save_button(self):
+
         username, pwd, service, notes = self.get_password()
+        if not pwd.strip() or not service.strip():
+            self.window.findChild(QLabel, 'result_message').setText(get_formatted_msg("Please check that you at least entered the password and the services associated", "red"))
+            return
         user = self.parent().user
         login_password = self.parent().user_password
         database_service.add_password_to_user(user,login_password, username, pwd, service, notes)
@@ -132,6 +136,7 @@ class AddDialog(QObject):
         self.window.hide()
 
     def get_password(self):
+
         return self.username_input.text(), self.password_input.text(), self.service_name_input.text(), self.notes_input.text()
 
     def cancel_action(self):
