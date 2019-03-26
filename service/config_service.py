@@ -2,7 +2,7 @@ import os
 from configparser import ConfigParser
 
 config = ConfigParser()
-config.read("../config.properties")
+config.read("config.properties")
 
 
 def get_data_directory():

@@ -1,9 +1,11 @@
 from gui import images_rc  # this is needed for image rendering
 
+
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QByteArray
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QPushButton, QLineEdit, QLabel, QCommandLinkButton
+
 
 from service import otp_service
 from service.database_service import register_new_user
@@ -38,12 +40,13 @@ class Register(QObject):
 
         self.confirm_dialog = RegisterConfirm(self)
 
+
     def continue_action(self):
         self.confirm_dialog.show()
 
     def cancel_action(self):
         self.parent().show()
-        self.window.destroy()
+        self.window.hide()
 
     def show(self):
         self.window.show()
@@ -70,6 +73,7 @@ class RegisterConfirm(QObject):
         self.cancel_button = self.window.findChild(QPushButton, 'cancel_button')
         self.cancel_button.clicked.connect(self.cancel_action)
 
+
     def register_action(self):
         username, password, otp_shared_secret = self.parent().get_credentials()
 
@@ -84,8 +88,10 @@ class RegisterConfirm(QObject):
         if registration_successful:
             register_new_user(username, password, otp_shared_secret)
             self.parent().parent().show("Registration Successful!") #open login window
-            self.parent().window.destroy() #close register window
-            self.window.destroy() #close dialog
+            self.window.hide()
+            self.parent().window.hide() #close register window
+
+
         else:
             self.result_message.setText(get_formatted_msg("Incorrect Credentials! Try again", "red"))
 

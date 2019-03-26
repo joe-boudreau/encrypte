@@ -1,3 +1,6 @@
+
+from service import utils
+
 class UserData:
 
     def __init__(self, username, password_hash, salt, shared_secret, passwords=[]):
@@ -63,6 +66,7 @@ class Password:
         self._service = service
         self._create_date = create_date
         self._expiry_date = expiry_date
+        self._password_id = utils.salt_generator()
 
     @property
     def password(self):

@@ -30,15 +30,15 @@ class Login(QObject):
         self.register = Register(parent=self)
 
     def open_register(self):
-        self.register.show()
-        self.window.destroy()
+        self.register.window.show()
+        self.window.hide()
 
     def attempt_login(self):
         username, password, otp_value = self.get_entered_credentials()
 
         if authenticate(username, password, otp_value):
             Common(username, password, parent=self).show()
-            self.window.destroy()
+            self.window.hide()
         else:
             self.show("Authentication Unsuccessful", "red")
 

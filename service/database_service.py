@@ -99,3 +99,8 @@ def add_password_to_user(user, login_password, password, service, create_date, e
    user.add_password(password, service, create_date, expiry_date)
    save_user(user, login_password)
    return user
+
+def remove_password(user, password):
+    user.passwords.remove(password)
+
+#def edit_password(user, password):
