@@ -25,6 +25,7 @@ class Login(QObject):
 
         self.username_input = self.window.findChild(QLineEdit, 'username_input')
         self.password_input = self.window.findChild(QLineEdit, 'password_input')
+        # QLineEdit().mousePressEvent()
         self.otp_input = self.window.findChild(QLineEdit, 'otp_input')
 
         self.register = Register(parent=self)

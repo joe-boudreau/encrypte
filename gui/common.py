@@ -3,16 +3,15 @@ import sys
 
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QAbstractTableModel, QVariant, Qt
-from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView, QLineEdit
+from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView, QLineEdit, QMessageBox
+from PyQt5.uic.properties import QtGui
+
 from service import database_service
 from gui import images_rc #this is needed for image rendering
 from service.database_service import get_user
 from service.utils import get_formatted_msg
 from user_passwords import Password, UserData
-
-
-def get_user(username, password):
-    return UserData(username, password, "salt", "shared_secret", passwords)
 
 class Common(QObject):
 
@@ -76,7 +75,17 @@ class Common(QObject):
         if len(selected) != 1:
             self.show("You must select a password to remove", "red")
         else:
-            self.delete_password(selected)
+            confirm = QMessageBox()
+            confirm.setIcon(QMessageBox.Warning)
+            confirm.setWindowTitle('Confirm')
+            confirm.setText(get_formatted_msg('Are you sure you want to delete this password?', 'white'))
+            confirm.setTextFormat(Qt.RichText)
+            confirm.setStandardButtons(QMessageBox.Yes)
+            confirm.addButton(QMessageBox.No)
+            confirm.setDefaultButton(QMessageBox.No)
+            confirm.setStyleSheet("background-color:black;color:white")
+            if confirm.exec() == QMessageBox.Yes:
+                self.delete_password(selected)
 
 
     def delete_password(self, selected):
@@ -161,7 +170,6 @@ class AddDialog(QObject):
         self.window.hide()
 
     def get_password(self):
-
         return self.username_input.text(), self.password_input.text(), self.service_name_input.text(), self.notes_input.text()
 
     def cancel_action(self):
@@ -214,11 +222,7 @@ class Editdialog(QObject):
         self.parent().show()
         self.window.hide()
 
-password1 = Password("gmail","secret1", "Facebook")
-password2 = Password("like","secret2", "Google")
-password3 = Password("brand","secret1", "Pornhub")
-passwords = [password1, password2, password3]
-app = QApplication(sys.argv)
-common = Common("test", "password")
-common.show()
-sys.exit(app.exec_())
+# app = QApplication(sys.argv)
+# common = Common("Joe Boudreau", "test")
+# common.show()
+# sys.exit(app.exec_())
