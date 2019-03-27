@@ -8,7 +8,11 @@ from service import database_service
 from gui import images_rc #this is needed for image rendering
 from service.database_service import get_user
 from service.utils import get_formatted_msg
-from user_passwords import Password
+from user_passwords import Password, UserData
+
+
+def get_user(username, password):
+    return UserData(username, password, "salt", "shared_secret", passwords)
 
 class Common(QObject):
 
@@ -26,6 +30,9 @@ class Common(QObject):
 
         self.common_button = self.window.findChild(QPushButton, 'Add_button')
         self.common_button.clicked.connect(self.open_add_dialog)
+
+        self.common_button = self.window.findChild(QPushButton, 'Edit_button')
+        self.common_button.clicked.connect(self.open_edit_dialog)
 
         self.common_button = self.window.findChild(QPushButton, 'Remove_button')
         self.common_button.clicked.connect(self.remove_action)
@@ -54,6 +61,15 @@ class Common(QObject):
     def open_add_dialog(self):
         AddDialog(self).window.show()
 
+
+    def open_edit_dialog(self):
+        selected = self.password_table.selectionModel().selectedRows()
+
+        if len(selected) != 1:
+            self.show("You must select a password to remove", "red")
+        else:
+            Editdialog(self.user.passwords[selected[0].row()], self).window.show()
+
     def remove_action(self):
         selected = self.password_table.selectionModel().selectedRows()
 
@@ -61,6 +77,7 @@ class Common(QObject):
             self.show("You must select a password to remove", "red")
         else:
             self.delete_password(selected)
+
 
     def delete_password(self, selected):
         password_to_remove = self.user.passwords[selected[0].row()]
@@ -151,14 +168,57 @@ class AddDialog(QObject):
         self.parent().show()
         self.window.hide()
 
+class Editdialog(QObject):
 
-# password1 = Password("gmail","secret1", "Facebook")
-# password2 = Password("like","secret2", "Google")
-# password3 = Password("brand","secret1", "Pornhub")
-#
-# passwords = [password1, password2, password3]
-#
-# app = QApplication(sys.argv)
-# common = Common("test", "password")
-# common.show()
-# sys.exit(app.exec_())
+    def __init__(self, password_to_modify, parent=None):
+        super(Editdialog, self).__init__(parent)
+        self.window = uic.loadUi("gui/ui_files/add_or_edit_new_password.ui")
+        self.common_button = self.window.findChild(QPushButton, 'cancel_button')
+        self.common_button.clicked.connect(self.cancel_action)
+
+        self.username_input = self.window.findChild(QLineEdit, 'username_input')
+        self.password_input = self.window.findChild(QLineEdit, 'password_input')
+        self.service_name_input = self.window.findChild(QLineEdit, 'service_name_input')
+        self.notes_input = self.window.findChild(QLineEdit, 'notes_input')
+        self.password_to_modify = password_to_modify
+        self.edit_password()
+        self.common_button = self.window.findChild(QPushButton, 'save_button')
+        self.common_button.clicked.connect(self.update_info)
+
+
+    def edit_password(self):
+
+        self.username_input.setText(self.password_to_modify.username)
+        self.password_input.setText(self.password_to_modify.password)
+        self.service_name_input.setText(self.password_to_modify.service)
+        self.notes_input.setText(self.password_to_modify.notes)
+
+    def update_info(self):
+
+        username, pwd, service, notes = self.get_password()
+        if not pwd.strip() or not service.strip():
+            self.window.findChild(QLabel, 'result_message').setText(get_formatted_msg("Please check that you at least entered the password and the services associated", "red"))
+            return
+        user = self.parent().user
+        login_password = self.parent().user_password
+        database_service.remove_password(self.parent().user, self.parent().user_password, self.password_to_modify)
+        database_service.add_password_to_user(self.parent().user, login_password, username, pwd, service, notes)
+        self.parent().load_password_model()
+        self.parent().show("The new password information has been succesfuly added to the file")
+        self.window.hide()
+
+    def get_password(self):
+        return self.username_input.text(), self.password_input.text(), self.service_name_input.text(), self.notes_input.text()
+
+    def cancel_action(self):
+        self.parent().show()
+        self.window.hide()
+
+password1 = Password("gmail","secret1", "Facebook")
+password2 = Password("like","secret2", "Google")
+password3 = Password("brand","secret1", "Pornhub")
+passwords = [password1, password2, password3]
+app = QApplication(sys.argv)
+common = Common("test", "password")
+common.show()
+sys.exit(app.exec_())
