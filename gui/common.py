@@ -1,17 +1,17 @@
 import datetime
 import sys
-
-from PyQt5 import uic
-from PyQt5.QtCore import QObject, QAbstractTableModel, QVariant, Qt
+from PyQt5 import uic, QtGui
+from PyQt5.QtCore import QObject, QAbstractTableModel, QVariant, Qt, QSortFilterProxyModel
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView, QLineEdit, QMessageBox
-from PyQt5.uic.properties import QtGui
 
 from service import database_service
 from gui import images_rc #this is needed for image rendering
 from service.database_service import get_user
 from service.utils import get_formatted_msg
 from user_passwords import Password, UserData
+
+
 
 class Common(QObject):
 
@@ -26,6 +26,9 @@ class Common(QObject):
 
         username_label = self.window.findChild(QLabel, 'username_label')
         username_label.setText(username_label.text().format(username))
+
+        self.service_filter_input = self.window.findChild(QLineEdit, 'Filter_service')
+        self.username_filter_input = self.window.findChild(QLineEdit, 'Filter_username')
 
         self.common_button = self.window.findChild(QPushButton, 'Add_button')
         self.common_button.clicked.connect(self.open_add_dialog)
@@ -42,7 +45,6 @@ class Common(QObject):
         self.password_table = self.window.findChild(QTableView, 'Password_table')
         self.load_password_model()
 
-        self.common_button = self.window.findChild(QTableView, 'Password_button')
 
 
 
@@ -55,6 +57,18 @@ class Common(QObject):
         model = PasswordsModel(self.user.passwords)
         #get the user password and format them in an intelligible way for the tableviw
         self.password_table.setModel(model)
+
+        service_filter_proxy_model = QSortFilterProxyModel()
+        service_filter_proxy_model.setSourceModel(model)
+        service_filter_proxy_model.setFilterKeyColumn(3)  # 4th column
+        self.service_filter_input.textChanged.connect(service_filter_proxy_model.setFilterRegExp)
+        self.password_table.setModel(service_filter_proxy_model)
+
+        username_filter_proxy_model = QSortFilterProxyModel()
+        username_filter_proxy_model.setSourceModel(service_filter_proxy_model)
+        username_filter_proxy_model.setFilterKeyColumn(4)  # 5th column
+        self.username_filter_input.textChanged.connect(username_filter_proxy_model.setFilterRegExp)
+        self.password_table.setModel(username_filter_proxy_model)
         #set_model populates tableview with the user passwords
 
     def open_add_dialog(self):
@@ -86,6 +100,9 @@ class Common(QObject):
             confirm.setStyleSheet("background-color:black;color:white")
             if confirm.exec() == QMessageBox.Yes:
                 self.delete_password(selected)
+
+
+
 
 
     def delete_password(self, selected):
@@ -142,7 +159,7 @@ class PasswordsModel(QAbstractTableModel):
 class AddDialog(QObject):
     def __init__(self, parent=None):
         super(AddDialog, self).__init__(parent)
-        self.window = uic.loadUi("gui/ui_files/add_new_password.ui")
+        self.window = uic.loadUi("gui/ui_files/add_or_edit_new_password.ui")
 
         self.common_button = self.window.findChild(QPushButton, 'save_button')
         self.common_button.clicked.connect(self.save_button)
@@ -221,6 +238,10 @@ class Editdialog(QObject):
     def cancel_action(self):
         self.parent().show()
         self.window.hide()
+
+
+
+
 
 # app = QApplication(sys.argv)
 # common = Common("Joe Boudreau", "test")
