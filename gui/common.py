@@ -4,6 +4,7 @@ from PyQt5.QtCore import QObject, QAbstractTableModel, QVariant, Qt, QSortFilter
 from PyQt5.QtGui import QPalette
 from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView, QLineEdit, QMessageBox
 
+
 from service import database_service
 from gui import images_rc #this is needed for image rendering
 from service.database_service import get_user
@@ -36,14 +37,21 @@ class Common(QObject):
         self.common_button = self.window.findChild(QPushButton, 'Edit_button')
         self.common_button.clicked.connect(self.open_edit_dialog)
 
+
         self.common_button = self.window.findChild(QPushButton, 'Remove_button')
         self.common_button.clicked.connect(self.remove_action)
 
+        self.common_button = self.window.findChild(QPushButton, 'Log_out')
+        self.common_button.clicked.connect(self.Log_out)
+
         self.common_button = self.window.findChild(QPushButton, 'Quit_button')
         self.common_button.clicked.connect(self.quit_action)
+        a = 2
 
         self.password_table = self.window.findChild(QTableView, 'Password_table')
-        self.password_table.setStyleSheet("QHeaderView::section { background-color:#fbbb27 }")
+        self.password_table.setStyleSheet("QHeaderView::section { background-color:#fbbb27 } ;"
+                                          "selection-color:#fbbb27 ")
+        #self.password_table.setStyleSheet("selection-color:#fbbb27 ;")
         self.password_table.clicked.connect(self.unmask_password)
         self.load_password_model()
 
@@ -60,14 +68,17 @@ class Common(QObject):
         model = PasswordsModel(self.user.passwords)
         #get the user password and format them in an intelligible way for the tableviw
         self.password_table.setModel(model)
-
+        self.password_table.setSortingEnabled(True)
+        self.password_table.setAcceptDrops(True)
         service_filter_proxy_model = QSortFilterProxyModel()
+        service_filter_proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         service_filter_proxy_model.setSourceModel(model)
         service_filter_proxy_model.setFilterKeyColumn(1)  # 2nd column
         self.service_filter_input.textChanged.connect(service_filter_proxy_model.setFilterRegExp)
         self.password_table.setModel(service_filter_proxy_model)
-
+        self.password_table.setDragEnabled(True)
         username_filter_proxy_model = QSortFilterProxyModel()
+        username_filter_proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
         username_filter_proxy_model.setSourceModel(service_filter_proxy_model)
         username_filter_proxy_model.setFilterKeyColumn(0)  # 1st column
         self.username_filter_input.textChanged.connect(username_filter_proxy_model.setFilterRegExp)
@@ -82,7 +93,7 @@ class Common(QObject):
         selected = self.password_table.selectionModel().selectedRows()
 
         if len(selected) != 1:
-            self.show("You must select a password to remove", "red")
+            self.show("You must select the row you want to edit", "red")
         else:
             Editdialog(self.user.passwords[selected[0].row()], self).window.show()
 
@@ -117,7 +128,13 @@ class Common(QObject):
     def quit_action(self):
         self.window.hide()
         sys.exit()
-        return
+
+
+    def Log_out(self):
+        from gui.login import Login
+        self.window.hide()
+        Login(self).window.show()
+
 
     def show(self, msg=None, color="green"):
         if msg is not None:
