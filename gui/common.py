@@ -62,13 +62,13 @@ class Common(QObject):
 
         service_filter_proxy_model = QSortFilterProxyModel()
         service_filter_proxy_model.setSourceModel(model)
-        service_filter_proxy_model.setFilterKeyColumn(3)  # 4th column
+        service_filter_proxy_model.setFilterKeyColumn(1)  # 2nd column
         self.service_filter_input.textChanged.connect(service_filter_proxy_model.setFilterRegExp)
         self.password_table.setModel(service_filter_proxy_model)
 
         username_filter_proxy_model = QSortFilterProxyModel()
         username_filter_proxy_model.setSourceModel(service_filter_proxy_model)
-        username_filter_proxy_model.setFilterKeyColumn(4)  # 5th column
+        username_filter_proxy_model.setFilterKeyColumn(0)  # 1st column
         self.username_filter_input.textChanged.connect(username_filter_proxy_model.setFilterRegExp)
         self.password_table.setModel(username_filter_proxy_model)
         #set_model populates tableview with the user passwords
