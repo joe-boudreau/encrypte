@@ -1,4 +1,3 @@
-import datetime
 import sys
 from PyQt5 import uic, QtGui
 from PyQt5.QtCore import QObject, QAbstractTableModel, QVariant, Qt, QSortFilterProxyModel
@@ -8,9 +7,10 @@ from PyQt5.QtWidgets import QPushButton, QApplication, QLabel, QTableView, QLine
 from service import database_service
 from gui import images_rc #this is needed for image rendering
 from service.database_service import get_user
-from service.utils import get_formatted_msg
+from service.utils import get_formatted_msg, maskUnmask
 from user_passwords import Password, UserData
 
+NONE = -1
 
 
 class Common(QObject):
@@ -43,10 +43,12 @@ class Common(QObject):
         self.common_button.clicked.connect(self.quit_action)
 
         self.password_table = self.window.findChild(QTableView, 'Password_table')
+        self.password_table.clicked.connect(self.unmask_password)
         self.load_password_model()
 
 
-
+    def unmask_password(self, index):
+        self.password_table.model().setData(index, None, Qt.DisplayRole)
 
     def show(self, msg=None, color="black"):
         if msg is not None:
@@ -121,6 +123,7 @@ class Common(QObject):
             self.window.findChild(QLabel, 'result_msg').setText(get_formatted_msg(msg, color))
         self.window.show()
 
+
 class PasswordsModel(QAbstractTableModel):
     def __init__(self, passwords, parent=None):
         """
@@ -130,10 +133,9 @@ class PasswordsModel(QAbstractTableModel):
         """
         QAbstractTableModel.__init__(self, parent)
         self.passwords = passwords
-        if len(passwords) > 0:
-            self.headerdata = list(vars(passwords[0]))
-        else:
-            self.headerdata = []
+        self.password_index = 2
+        self.headerdata = ['Username', 'Service', 'Password', 'Notes']
+        self.selected = NONE
 
     def rowCount(self, parent):
         return len(self.passwords)
@@ -142,19 +144,33 @@ class PasswordsModel(QAbstractTableModel):
         return len(self.headerdata)
 
     def get_password_attr(self, row_index, attr_index):
-        return list(vars(self.passwords[row_index]).values())[attr_index]
+        attr_name = self.headerdata[attr_index]
+        return vars(self.passwords[row_index])[attr_name]
 
     def data(self, index, role):
-        if not index.isValid():
-            return QVariant()
-        elif role != Qt.DisplayRole:
-            return QVariant()
-        return QVariant(self.get_password_attr(index.row(), index.column()))
+        if index.isValid():
+            if index.column() == self.password_index:
+                if (role == Qt.DisplayRole) & (index.row() == self.selected):
+                    return QVariant(self.get_password_attr(index.row(), index.column()))
+                elif role == Qt.DisplayRole:
+                    return QVariant("************")
+            elif role == Qt.DisplayRole:
+                return QVariant(self.get_password_attr(index.row(), index.column()))
+        return QVariant()
+
+    def setData(self, index, value, role):
+        if index.column() == self.password_index:
+            self.selected = index.row()
+        else:
+            self.selected = NONE
+        self.dataChanged.emit(index.sibling(0, 0), index.sibling(len(self.passwords)-1, len(self.headerdata)-1), [])
+        return True
 
     def headerData(self, col, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return QVariant(self.headerdata[col])
         return QVariant()
+
 
 class AddDialog(QObject):
     def __init__(self, parent=None):
@@ -169,6 +185,7 @@ class AddDialog(QObject):
 
         self.username_input = self.window.findChild(QLineEdit, 'username_input')
         self.password_input = self.window.findChild(QLineEdit, 'password_input')
+        self.password_input.installEventFilter(self)
         self.service_name_input = self.window.findChild(QLineEdit, 'service_name_input')
         self.notes_input = self.window.findChild(QLineEdit, 'notes_input')
 
@@ -186,12 +203,17 @@ class AddDialog(QObject):
         self.parent().show("The new password information has been succesfuly added to the file")
         self.window.hide()
 
+    def eventFilter(self, source, event):
+        maskUnmask(self, source, event)
+        return super(AddDialog, self).eventFilter(source, event)
+
     def get_password(self):
         return self.username_input.text(), self.password_input.text(), self.service_name_input.text(), self.notes_input.text()
 
     def cancel_action(self):
         self.parent().show()
         self.window.hide()
+
 
 class Editdialog(QObject):
 
@@ -203,13 +225,13 @@ class Editdialog(QObject):
 
         self.username_input = self.window.findChild(QLineEdit, 'username_input')
         self.password_input = self.window.findChild(QLineEdit, 'password_input')
+        self.password_input.installEventFilter(self)
         self.service_name_input = self.window.findChild(QLineEdit, 'service_name_input')
         self.notes_input = self.window.findChild(QLineEdit, 'notes_input')
         self.password_to_modify = password_to_modify
         self.edit_password()
         self.common_button = self.window.findChild(QPushButton, 'save_button')
         self.common_button.clicked.connect(self.update_info)
-
 
     def edit_password(self):
 
@@ -232,18 +254,13 @@ class Editdialog(QObject):
         self.parent().show("The new password information has been succesfuly added to the file")
         self.window.hide()
 
+    def eventFilter(self, source, event):
+        maskUnmask(self, source, event)
+        return super(Editdialog, self).eventFilter(source, event)
+
     def get_password(self):
         return self.username_input.text(), self.password_input.text(), self.service_name_input.text(), self.notes_input.text()
 
     def cancel_action(self):
         self.parent().show()
         self.window.hide()
-
-
-
-
-
-# app = QApplication(sys.argv)
-# common = Common("Joe Boudreau", "test")
-# common.show()
-# sys.exit(app.exec_())

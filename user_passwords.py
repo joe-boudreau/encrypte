@@ -62,44 +62,39 @@ class UserData:
 class Password:
 
     def __init__(self, username, password, service, notes = "default"):
-        self._username = username
-        self._password = password
-        self._service = service
-        self._notes = notes
-        self._id = utils.salt_generator()
+        self.Username = username
+        self.Password = password
+        self.Service = service
+        self.Notes = notes
 
     @property
     def username(self):
-        return self._username
+        return self.Username
 
     @property
     def password(self):
-        return self._password
+        return self.Password
 
     @property
     def service(self):
-        return self._service
+        return self.Service
 
     @property
     def notes(self):
-        return self._notes
-
-    @property
-    def id(self):
-        return self._id
+        return self.Notes
 
     @username.setter
     def username(self, val):
-        self._username = val
+        self.Username = val
 
     @password.setter
     def password(self, val):
-        self._password = val
+        self.Password = val
 
     @service.setter
     def service(self, val):
-        self._service = val
+        self.Service = val
 
     @notes.setter
     def notes(self, val):
-        self._notes = val
+        self.Notes = val

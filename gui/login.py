@@ -1,13 +1,16 @@
+from PyQt5.QtGui import QMouseEvent
+from PyQt5.uic.properties import QtGui
+
 from gui import images_rc #don't remove - this is needed for image rendering
 
-from PyQt5 import uic
+from PyQt5 import uic, QtCore
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit
 
 from gui.common import Common
 from gui.register import Register
 from service.database_service import authenticate
-from service.utils import get_formatted_msg
+from service.utils import get_formatted_msg, maskUnmask
 
 
 class Login(QObject):
@@ -25,10 +28,15 @@ class Login(QObject):
 
         self.username_input = self.window.findChild(QLineEdit, 'username_input')
         self.password_input = self.window.findChild(QLineEdit, 'password_input')
-        # QLineEdit().mousePressEvent()
+        self.password_input.installEventFilter(self)
+
         self.otp_input = self.window.findChild(QLineEdit, 'otp_input')
 
         self.register = Register(parent=self)
+
+    def eventFilter(self, source, event):
+        maskUnmask(self, source, event)
+        return super(Login, self).eventFilter(source, event)
 
     def open_register(self):
         self.register.window.show()
