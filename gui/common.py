@@ -43,6 +43,7 @@ class Common(QObject):
         self.common_button.clicked.connect(self.quit_action)
 
         self.password_table = self.window.findChild(QTableView, 'Password_table')
+        self.password_table.setStyleSheet("QHeaderView::section { background-color:#fbbb27 }")
         self.password_table.clicked.connect(self.unmask_password)
         self.load_password_model()
 
