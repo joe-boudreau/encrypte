@@ -49,8 +49,8 @@ class Common(QObject):
         a = 2
 
         self.password_table = self.window.findChild(QTableView, 'Password_table')
-        self.password_table.setStyleSheet("QHeaderView::section { background-color:#fbbb27 } ;"
-                                          "selection-color:#fbbb27 ")
+        self.password_table.setStyleSheet("QHeaderView::section { background-color:#fbbb27} ;")
+
         #self.password_table.setStyleSheet("selection-color:#fbbb27 ;")
         self.password_table.clicked.connect(self.unmask_password)
         self.load_password_model()
@@ -126,14 +126,34 @@ class Common(QObject):
         self.show("The password for service: {} has been permanently deleted".format(password_to_remove.service))
 
     def quit_action(self):
-        self.window.hide()
-        sys.exit()
+        confirm = QMessageBox()
+        confirm.setIcon(QMessageBox.Warning)
+        confirm.setWindowTitle('Confirm')
+        confirm.setText(get_formatted_msg('Are you sure you want to quit the application ? ', 'white'))
+        confirm.setTextFormat(Qt.RichText)
+        confirm.setStandardButtons(QMessageBox.Yes)
+        confirm.addButton(QMessageBox.No)
+        confirm.setDefaultButton(QMessageBox.No)
+        confirm.setStyleSheet("background-color:black;color:white")
+        if confirm.exec() == QMessageBox.Yes:
+            self.window.hide()
+            sys.exit()
 
 
     def Log_out(self):
         from gui.login import Login
-        self.window.hide()
-        Login(self).window.show()
+        confirm = QMessageBox()
+        confirm.setIcon(QMessageBox.Warning)
+        confirm.setWindowTitle('Confirm')
+        confirm.setText(get_formatted_msg('Are you sure you want to log out of the application ? ', 'white'))
+        confirm.setTextFormat(Qt.RichText)
+        confirm.setStandardButtons(QMessageBox.Yes)
+        confirm.addButton(QMessageBox.No)
+        confirm.setDefaultButton(QMessageBox.No)
+        confirm.setStyleSheet("background-color:black;color:white")
+        if confirm.exec() == QMessageBox.Yes:
+            self.window.hide()
+            Login(self).window.show()
 
 
     def show(self, msg=None, color="green"):

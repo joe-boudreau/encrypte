@@ -168,7 +168,7 @@
       <x>30</x>
       <y>120</y>
       <width>661</width>
-      <height>211</height>
+      <height>201</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -550,10 +550,10 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>450</y>
-      <width>771</width>
-      <height>141</height>
+      <x>20</x>
+      <y>420</y>
+      <width>781</width>
+      <height>171</height>
      </rect>
     </property>
     <property name="palette">
@@ -675,14 +675,14 @@
      </palette>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ffffff;&quot;&gt;Help:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;1. To add a new password, click the 'Add' button and enter the password information&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;2. To edit an existing password, select the desired entry and click the 'Edit' button to change the saved information&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;3. To delete a password, select the desired entry and click the 'Remove' button&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;4. When finished, exit the program using the 'Quit' button&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#f7fcff;&quot;&gt;Help:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#f7fcff;&quot;&gt;1. To add a new password, click the 'Add' button and enter the password information&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#f7fcff;&quot;&gt;2. To edit an existing password, select the desired entry and click the 'Edit' button to change the saved information&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#f7fcff;&quot;&gt;3. To delete a password, select the desired entry and click the 'Remove' button&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#f7fcff;&quot;&gt;4. Click on the desired password cell to reveal it's content and press ctrl+c to copy&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#f7fcff;&quot;&gt;5. When finished, exit the program using the 'Quit' button, or 'log out' to go back to the login window&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="result_msg">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>350</y>
+      <y>340</y>
       <width>661</width>
       <height>39</height>
      </rect>
@@ -994,7 +994,7 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>40</height>
+         <height>30</height>
         </size>
        </property>
       </spacer>
@@ -1119,8 +1119,26 @@
          </disabled>
         </palette>
        </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="mouseTracking">
+        <bool>true</bool>
+       </property>
+       <property name="tabletTracking">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>Edit</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -1268,7 +1286,7 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>400</y>
+      <y>390</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -1399,7 +1417,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>400</y>
+      <y>390</y>
       <width>60</width>
       <height>16</height>
      </rect>
@@ -1530,7 +1548,7 @@
     <property name="geometry">
      <rect>
       <x>460</x>
-      <y>400</y>
+      <y>390</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -1661,7 +1679,7 @@
     <property name="geometry">
      <rect>
       <x>380</x>
-      <y>400</y>
+      <y>390</y>
       <width>71</width>
       <height>20</height>
      </rect>
@@ -1792,7 +1810,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>400</y>
+      <y>390</y>
       <width>91</width>
       <height>20</height>
      </rect>
